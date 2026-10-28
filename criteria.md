@@ -51,61 +51,41 @@ whether you hit them:
 
 ---
 
-## 1.
+## 1. Overall accuracy is at least 0.80 on the test split, on all three seeds.
 
-<!-- Your criterion. It must name a number. -->
-
-
-
-**Why this target:**
+**Why this target:** Most misses will occur on the analysis/advice boundary. The test split is about 30 (15% of my ~200 posts) so no more than 6 misses should be expected.
 
 
 
 ---
 
-## 2.
+## 2. News has an F1 of at least 0.85. Analysis and Advice each have an F1 of at least 0.70. All three hold on every seed.
 
-<!-- Your criterion. -->
-
-
-
-**Why this target:**
+**Why this target:** News posts typically have a distinct structure of headline, article, link with the body written in third-person. Analysis and Advice posts are both structured based on the user's writing thus a lower target is expected.
 
 
 
 ---
 
-## 3.
+## 3. No label is more than 50% of labels.csv, and no label is fewer than 50 posts.
 
-<!-- Your criterion. -->
-
-
-
-**Why this target:**
+**Why this target:** If one label became too lopsided, the model can score high incorrectly classifying posts using that label. With minimum 50 posts per label, there are still about 8 posts allocated for the test split.
 
 
 
 ---
 
-## 4.
+## 4. I agree with the staff labels on at least 21 of the 30 staff posts (70%).
 
-<!-- Your criterion. -->
-
-
-
-**Why this target:**
+**Why this target:** My dataset depends on applying the "majority" wording and the analysis/advice rule the same way every time. The staff set tests whether I can apply someone else's written rules consistently. It's below 80% because some of the 30 posts were chosen to be ambiguous.
 
 
 
 ---
 
-## 5.
+## 5. Of the test posts whose true label is analysis or advice, at most 20% of them will be labeled as the other on all three seeds.
 
-<!-- Your criterion. -->
-
-
-
-**Why this target:**
+**Why this target:** This is the hardest boundary where most misses will occur. If the model is successful in learning the boundry rule, at least 80% should land on the correct side of the boundary.
 
 
 
