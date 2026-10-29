@@ -147,22 +147,18 @@ If most of the content is based on the user's own situation (holdings, P/L, goal
 
 ## The Dataset
 
-<!-- Where you collected from, how you labelled, your counts, and three hard
-     cases. -->
+**Where the posts came from:** These posts came from Reddit's r/stocks subreddit. The posts are all the original thread-starters and none are replies.
 
-**Where the posts came from:**
-
-**How I labelled them:** <!-- Cold first? Pre-labelled with AI and corrected?
-Say so plainly — the disclosure is required, not penalised. -->
+**How I labelled them:** All of the posts were labeled cold, manually categorized at the time of copying them into the csv.
 
 **Counts per label:**
 
-| Label | Count | Share |
-|---|---|---|
-|  |  |  |
-|  |  |  |
-|  |  |  |
-| **Total** |  | 100% |
+| Label     | Count |  Share |
+|-----------|-------|--------|
+| advice    |   51  |  25.5% |
+| analysis  |   82  |  41.0% |
+| news      |   67  |  33.5% |
+| **Total** |  200  | 100.0% |
 
 **Three hard cases**
 
@@ -170,25 +166,25 @@ Say so plainly — the disclosure is required, not penalised. -->
      been, and what you chose. These are worth more than the easy 190. -->
 
 **1.**
-> *The post:*
+> *The post:* Xiaomi shipped 30.7 million smartphones in the third quarter, down 29.2% from a year earlier, according to IDC's preliminary vendor table. Samsung and Apple between them held 45.0% of the quarter's shipments, up from 36.9% a year earlier. Both OPPO and vivo fell by larger percentages than Xiaomi. The full market came in at 255.3 million units, and IDC put the year-over-year decline at 22.0%, calling it the largest of any quarter in its tracking. IDC expects overall smartphone growth to be constrained through 2027, with any recovery pushed to 2028 at the earliest. Memory costs are still climbing, though the quarter-over-quarter increase slowed to low double digits in the third quarter. With component costs still climbing, have you or the people around you started waiting longer between phone upgrades?
 >
-> *Could have been:*
+> *Could have been:* news or advice
 >
-> *I chose, because:*
+> *I chose, because:* news: The majority of the post is verbatim news, and only at the very end does a question arise with tertiary relevancy.
 
 **2.**
-> *The post:*
+> *The post:* Fed pausing today, with eyes on December. What are you trading? Ahead of today's FOMC decision, consensus points to a temporary interest rate pause, holding the benchmark steady at 3.75%–4.00% to let the market fully absorb previous tightening actions. However, with September's inflation metrics showing persistent heat, the primary focus is entirely shifted to the 2:30 PM ET press conference, where Chairman Kevin Warsh is widely expected to signal a 25bps rate hike for the December meeting.Given that a hawkish pause is effectively priced into equities, the market’s reaction will depend heavily on the tone surrounding future macro policy projections and the terminal rate outlook. Are you defensively positioning your portfolio into mega-cap tech and cash-heavy alternatives ahead of the afternoon volatility, or are you utilizing options vectors to hedge against a potentially hawkish surprise from the Fed?
 >
-> *Could have been:*
+> *Could have been:* news or advice
 >
-> *I chose, because:*
+> *I chose, because:* advice: Although the post contains a good amount of news, the post is framed as a question seeking advice from the community regarding their trading strategies for the day.
 
 **3.**
-> *The post:*
+> *The post:*"Anthropic's valuation chatter just shifted. What are you watching? Anthropic IPO chatter picked up again after last week's investor day talk. Some investors are now floating something closer to 1.5 trillion, down from the earlier 2 trillion chatter. The company has only said it filed a confidential draft S 1. I still haven't seen a public prospectus on EDGAR, so I'm not trading rumor windows or valuation guesses. Before there's anything to buy, I'm watching the public names first. AMZN and GOOGL sit on both sides of this: a stake that can get marked up when private AI rounds reprice, and Anthropic cloud spend that lands on AWS / Google Cloud. That's why the IPO headline keeps pulling people into those tickers. Fair enough. But if the real thesis is cloud demand, I'd rather see the cloud segment itself keep growing with decent margins. AWS last printed about 37% growth with operating margins near 39%, which is the part I care about more than another Anthropic rumor. I've been lining that segment up against older quarters on moomoo so I'm not just reacting to the headline. Are you waiting for a public S 1, or watching AMZN / GOOGL first? If you're watching, which numbers matter most?"
 >
-> *Could have been:*
+> *Could have been:* advice or analysis
 >
-> *I chose, because:*
+> *I chose, because:* analysis: The majority of the post is the user's orignal thought, and it is clear they are confident in their statements. The question at the end is not the core purpose of the post and is intended to seed a discussion rather than gain advice. 
 
 ---
 
