@@ -192,16 +192,24 @@ If most of the content is based on the user's own situation (holdings, P/L, goal
 
 <!-- Your starting model, your settings, and anything you changed and why. -->
 
-**Base model:**
+**Base model:** `distilbert-base-uncased`
 
-**Settings:** <!-- epochs, learning rate, batch size, seed -->
+**Settings:** 3 epochs, learning rate 2e-5, batch size 16, max length 128 tokens, seed 42. Trained on CPU.
 
 **Anything I changed from the defaults, and why:**
+Nothing. I kept every default so this first run is a clean starting point to compare against. One thing to note: many r/stocks posts are longer than 128 tokens, so the model only reads the first ~100 words of a long post. For `advice` posts, the question that defines the label often comes at the end.
 
-**Split sizes:** <!-- train / val / test, and per-label counts in the test
-split. If a label had fewer than about 8 in test, say so — it explains a lot
-of next unit's variance. -->
+**Split sizes:** train 139 · val 31 · test 30 (stratified 70/15/15)
 
+| Label    | Train | Val | Test |
+|----------|-------|-----|------|
+| advice   |  35   | 8   |  8   |
+| analysis |  57   | 13  |  12  |
+| news     |  47   | 10  |  10  |
+
+`advice` is my smallest label and has exactly 8 posts in test, right at the line where F1 starts to swing between seeds. Each `advice` post in test is worth 12.5 points of recall.
+
+Validation loss went down each epoch (1.043 → 0.997 → 0.973), but it was still falling at epoch 3. Training stopped before the model converged.
 
 
 ---
@@ -217,17 +225,18 @@ of next unit's variance. -->
 
 **Moment 1**
 
-- *What I asked for:*
-- *What came back:*
-- *What I changed:*
+- *What I asked for:* I asked Claude to stress-test my label definitions and decision rule against 8 made-up r/stocks posts, several of them built to sit on a boundary between labels.
+- *What came back:* Several posts didn't get exactly one label. Examples: an article followed by "should I sell my shares?" (news or advice?), an article with heavy commentary (news or analysis?), a bare gain post and a one-line opinion that fit no label. It also pointed out that my `advice` definition covered general questions while my decision rule didn't.
+- *What I changed:* I added "majority of the post" wording to all three definitions. I gave `analysis` a minimum bar of "at least one supporting argument or fact". I changed `advice` to cover questions "on the market", and widened `news` to include "a summary of an announcement". I rejected the gain-post and one-liner cases, because r/stocks moderation removes low-effort posts and they wouldn't appear in my data, so I didn't add a label for them.
 
 **Moment 2**
 
-- *What I asked for:*
-- *What came back:*
-- *What I changed:*
+- *What I asked for:* I asked for help writing five acceptance criteria, then had Claude review my drafts.
+- *What came back:* Five draft criteria (accuracy, per-label F1, balance, staff agreement, confidence) plus an alternative criterion on the analysis/advice boundary. On review, it pointed out that my consistency criterion ("if someone else labeled this dataset") couldn't be measured, and that my balance reason blamed lopsided labels for the F1 swings that small labels actually cause.
+- *What I changed:* I raised the balance cap from 45% to 50%. I dropped the confidence criterion and used the analysis/advice boundary criterion instead, since that's my hardest boundary. I rewrote #4 against the 30 staff posts so it can be measured, and rewrote my reasons to refer to my own test split size and labels.
 
 **Pre-labelling disclosure:**
+None. I labelled all 200 posts myself by hand as I collected them, with no AI pre-labelling. AI was used only to review my taxonomy and criteria, as described above. I did not pre-label any of the posts. All 200 were manually labeled.
 
 <!-- ═══════════════════════ UNIT 6 — THE TEST ═══════════════════════
 
