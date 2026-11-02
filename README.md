@@ -250,20 +250,19 @@ None. I labelled all 200 posts myself by hand as I collected them, with no AI pr
 <!-- Both models on the same posts. `python baseline.py --trained results.json`
      prints this table for you. -->
 
-| Measure | Baseline | Trained | Difference |
-|---|---|---|---|
-| Overall accuracy |  |  |  |
-| Macro F1 |  |  |  |
-| F1 — `label_one` |  |  |  |
-| F1 — `label_two` |  |  |  |
+| Measure          | Baseline | Trained | Difference |
+|------------------|----------|---------|------------|
+| Overall accuracy | 0.600    | 0.567   | -0.033     |
+| Macro F1         | 0.556    | 0.425   | -0.131     |
+| F1 — `advice`    | 0.667    | 0.000   | -0.667     |
+| F1 — `analysis`  | 0.667    | 0.686   | +0.019     |
+| F1 — `news`      | 0.333    | 0.588   | +0.255     |
 
 **What I predicted before I looked:**
-<!-- Milestone 1 asks you to write this BEFORE seeing the trained numbers. A
-     prediction made afterwards isn't one. -->
+I predict my trained model will beat baseline on news and analysis.
 
 **What the gap actually means:**
-<!-- If the baseline matched your trained model, your fine-tuning added
-     nothing — and that is a real finding, not a failure. Say it plainly. -->
+News and Analysis were more accurate with the trained model, but advice came out worse bringing down the overall accuracy to below the baseline. The advice definition or manual labeling were not explicit enough.
 
 
 
