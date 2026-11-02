@@ -373,33 +373,36 @@ The zero-shot baseline reached 0.667 F1 on advice, which shows the advice signal
 > *Which pile:* a
 
 
-**What the pattern in my disagreements tells me:**
-
-My labeling method is applied more loosely than the staff labeling methodology.
+**What the pattern in my disagreements tells me:** My labeling method is applied more loosely than the staff labeling methodology.
 
 ---
 
 ## The Improvement
 
-**What I changed:**
+**What I changed:** I raised `MAX_LENGTH` from 128 to 256 tokens in the notebook's settings cell. Nothing else changed: same 200 labels, same seeds (42, 7, 2024), same 3 epochs, learning rate 2e-5, batch size 16. Changing only this one setting means any difference in the after run comes from the model reading more of each post.
 
-**Which diagnosis pointed at it:**
+**Which diagnosis pointed at it:** The diagnoses for #2 and #5. Advice had F1 0.000 on all three seeds, and all 22 analysis/advice boundary errors went advice→analysis. The agreement report (29/30) suggested my labelling wasn't the cause. Checking labels.csv showed that 75% of advice posts are longer than 128 tokens (median 154), and the part that makes a post advice (the question asking the community what to do) usually comes at the end. At 128 tokens the model mostly saw the opening context, which looks like analysis. At 256 tokens it covers the median advice post. The zero-shot baseline, which reads the whole post, got 0.667 F1 on advice, so the signal is in the text when the model can see it.
 
 ### Run Log — After
 
 | Criterion | Target | Seed 42 | Seed 7 | Seed 2024 | Verdict |
 |---|---|---|---|---|---|
-| 1.  |  |  |  |  |  |
-| 2.  |  |  |  |  |  |
-| 3.  |  |  |  |  |  |
-| 4.  |  |  |  |  |  |
-| 5.  |  |  |  |  |  |
+| 1. Overall accuracy | ≥ 0.80 | 0.633 | 0.500 | 0.533 | MISSED |
+| 2. Per-label F1 (news / analysis / advice) | news ≥ 0.85; analysis, advice ≥ 0.70 | 0.737 / 0.727 / 0.000 | 0.462 / 0.615 / 0.000 | 0.571 / 0.632 / 0.000 | MISSED |
+| 3. Label balance in labels.csv | No label > 50%, none < 50 posts | Max 41% (analysis), min 51 (advice) | Same (dataset unchanged) | Same | MET |
+| 4. Agreement with staff labels | ≥ 21/30 (70%) | 29/30 (97%) | Same (labels unchanged) | Same | MET |
+| 5. Analysis↔advice cross-errors | ≤ 20% of true analysis + advice | 6/20 (30%) | 8/20 (40%) | 8/20 (40%) | MISSED |
 
 **Did it help, and how do I know:**
 
 <!-- If it didn't, say so. Relabelling that didn't help is a genuinely
      interesting result and earns full credit. -->
 
+No. It didn't fix the problem it was aimed at. Advice F1 is still 0.000 on all three seeds, the model still never predicts advice, and the analysis/advice cross-errors are exactly the same as before (6/20, 8/20, 8/20, all advice→analysis). If truncation were the cause, letting the model read the median advice post in full should have produced at least a few correct advice predictions. It produced none, so truncation wasn't the bottleneck.
+
+Overall accuracy moved (0.567 / 0.400 / 0.633 → 0.633 / 0.500 / 0.533), but the mean only went from 0.533 to 0.556, and seed 2024 got worse. That's within the seed-to-seed spread, so I can't call it a real improvement. The one consistent change is that the model now predicts news more often on seed 7 (0 → 3 correct). That's still news being separated sometimes, not advice being learned.
+
+Ruling out truncation leaves the other two causes from my diagnosis. Advice has only 35 training posts, and the model is undertrained: validation loss was still falling at epoch 3, and mean confidence is still about 0.43 whether the model is right or wrong, barely above the 0.33 of a random three-way guess. The model hasn't learned enough to move off the majority label, and showing it more of each post doesn't change that.
 
 
 ---
@@ -408,12 +411,15 @@ My labeling method is applied more loosely than the staff labeling methodology.
 
 <!-- For each criterion still missed: what you'd do, and why you stopped. -->
 
+**#2 Per-label F1 and #5 Analysis↔advice boundary (same root cause).** Advice is still never predicted, so both stay missed. Next I'd train longer, raising `EPOCHS` from 3 to around 8–10, because validation loss was still falling at epoch 3 (1.043 → 0.997 → 0.973). If advice still didn't appear, I'd label more advice posts to bring it from 35 training examples up to roughly the size of analysis (57). Training longer is the cheaper test, and it tells me whether the issue is training time or data. I stopped because this unit allows one improvement. Changing epochs at the same time as `MAX_LENGTH` would have made it impossible to tell which change did what.
 
+**#1 Overall accuracy.** This should rise once advice is fixed: advice is 8 of the 30 test posts, and the model gets every one wrong. Even a perfect advice fix wouldn't guarantee 0.80, though. News still swings between seeds (0.462–0.737 F1 after), which is the same undertraining problem. I'd expect longer training to help both, and I'd re-run all three seeds to check the result isn't a lucky split.
 
 **The gap between what I meant my labels to capture and what the model
 learned:**
 <!-- Two sentences. Your confusion matrix is the evidence. -->
 
+I meant advice to mean "a post whose main purpose is asking the community what to do," but the model learned nothing about advice. All 8 advice test posts went to analysis or news on every seed, before and after the fix. What it actually learned is closer to "default to analysis unless the post clearly reads like a news article," which is why the advice row of the confusion matrix is empty and almost everything piles into the analysis column.
 
 
 <!-- ═════════════════════════════════════════════════════════════════════
