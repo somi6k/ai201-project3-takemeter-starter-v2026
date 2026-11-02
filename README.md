@@ -332,12 +332,7 @@ News and Analysis were more accurate with the trained model, but advice came out
      data/staff_taxonomy.md, not your own — so every argument below is made
      from those definitions and those decision rules. -->
 
-**Agreement rate:** ___ / 30 = ___%
-
-<!-- Nobody grades this number. A 60% who argues every disagreement from the
-     stated rules beats a 95% who wrote "staff was right" nine times. Several
-     of the 30 were chosen because they're genuinely ambiguous — you should be
-     winning some of these. -->
+**Agreement rate:** 29 / 30 = 97%
 
 **Disagreements**
 
@@ -355,26 +350,20 @@ News and Analysis were more accurate with the trained model, but advice came out
      what you did across your own 200. -->
 
 **1.**
-> *The post:*
+> *The post:* "Three of us ran the same session on the same day, different shoes, within 10 seconds of each other over 5 miles. I'm not saying shoes do nothing, but whatever they do was smaller than the noise between three people."
+      "staff": "analysis",
+      "mine": "hot_take"
 >
-> *Staff said / I said:*
+> *Staff said / I said:* analysis, hot_take
 >
-> *My call, and why:*
+> *My call, and why:* I did not think the statement about the 3 people running on the same day within 10 seconds of each other was a verifiable fact, and therfore labeled this as hot_take instead of analysis. 
 >
-> *Which pile:*
+> *Which pile:* a
 
-**2.**
-> *The post:*
->
-> *Staff said / I said:*
->
-> *My call, and why:*
->
-> *Which pile:*
 
 **What the pattern in my disagreements tells me:**
 
-
+My labeling method is applied more loosely than the staff labeling methodology.
 
 ---
 
