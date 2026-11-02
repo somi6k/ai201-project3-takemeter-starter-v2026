@@ -275,11 +275,11 @@ News and Analysis were more accurate with the trained model, but advice came out
 
 | Criterion | Target | Seed 42 | Seed 7 | Seed 2024 | Verdict |
 |---|---|---|---|---|---|
-| 1.  |  |  |  |  |  |
-| 2.  |  |  |  |  |  |
-| 3.  |  |  |  |  |  |
-| 4.  |  |  |  |  |  |
-| 5.  |  |  |  |  |  |
+| 1. Overall accuracy | ≥ 0.80 | 0.567 | 0.400 | 0.633 | MISSED |
+| 2. Per-label F1 (news / analysis / advice) | news ≥ 0.85; analysis, advice ≥ 0.70 | 0.588 / 0.686 / 0.000 | 0.000 / 0.571 / 0.000 | 0.842 / 0.667 / 0.000 | MISSED |
+| 3. Label balance in labels.csv | No label > 50%, none < 50 posts | Max 41% (analysis), min 51 (advice) | Same (dataset, not seed-dependent) | Same | MET |
+| 4. Agreement with staff labels | ≥ 21/30 (70%) | 29/30 (97%) | Same (not seed-dependent) | Same | MET |
+| 5. Analysis↔advice cross-errors | ≤ 20% of true analysis + advice | 6/20 (30%) | 8/20 (40%) | 8/20 (40%) | MISSED |
 
 ### Confusion matrix
 
@@ -303,13 +303,25 @@ News and Analysis were more accurate with the trained model, but advice came out
 
 | # | Criterion | Target | Verdict | How I decided |
 |---|---|---|---|---|
-| 1 |  |  |  |  |
-| 2 |  |  |  |  |
-| 3 |  |  |  |  |
-| 4 |  |  |  |  |
-| 5 |  |  |  |  |
+| 1 | Overall accuracy | ≥ 0.80 on all three seeds | MISSED | Best seed was 0.633 (2024), worst 0.400 (7). No seed came within 0.15 of the target. |
+| 2 | Per-label F1 | news ≥ 0.85; analysis, advice ≥ 0.70, every seed | MISSED | Advice F1 was 0.000 on all three seeds. News peaked at 0.842 (2024) and was 0.000 on seed 7. Analysis never reached 0.70 (best 0.686). |
+| 3 | Label balance | No label > 50%, none < 50 posts | MET | Counted labels.csv: analysis 82 (41%), news 67 (33.5%), advice 51 (25.5%). This is a property of the dataset, so it holds on every seed. |
+| 4 | Staff agreement | ≥ 21/30 | MET | agreement_results.json: 29/30 agreed (97%). Not seed-dependent. |
+| 5 | Analysis↔advice cross-errors | ≤ 20% of true analysis + advice, every seed | MISSED | From each seed's confusion matrix, (advice→analysis + analysis→advice) / 20: 6/20, 8/20, 8/20. All 22 errors went advice→analysis; none went the other way. |
 
 **Diagnoses**
+
+**The agreement report rules out labelling as the main cause.** I agreed with staff on 29 of 30 posts (97%), and the one disagreement was a single pile (a) slip about what counts as a verifiable fact. I apply written rules consistently, so if my labels were inconsistent I'd expect errors in both directions across the analysis/advice boundary. Instead, every error goes one way and the model never predicts advice. That points to a model/data problem, not a labelling problem. One caveat: the staff set tests the staff taxonomy, not my own advice/analysis rule, so it's strong but indirect evidence.
+
+**#1 Overall accuracy: missed because the model is undertrained and collapses toward `analysis`.** On seed 7 it predicted `analysis` for all 30 test posts (accuracy 0.400 = 12/30, the analysis share). Mean confidence was about 0.42 whether the model was right or wrong, barely above the 0.33 of a three-way coin flip, so it hasn't separated the classes. Validation loss was still falling at epoch 3 (1.043 → 0.997 → 0.973). Cause: **a task the model can't reach from this much data/training**: 139 training posts and 3 epochs isn't enough for it to move off the majority label.
+
+**#2 Per-label F1: missed mainly because advice gets zero predictions.** Advice F1 is 0.000 on every seed because the model never predicts advice even once. Two causes stack:
+- **Too few examples:** advice is my smallest label, with only 35 training posts.
+- **Truncation:** 75% of advice posts in labels.csv are longer than the 128-token limit (median 154 tokens). The question that makes a post advice usually comes at the end, so the model is cut off before it sees it.
+
+The zero-shot baseline reached 0.667 F1 on advice, which shows the advice signal is in the text. News swings from 0.000 to 0.842 across seeds, the same instability as #1: when training happens to separate news, it does well.
+
+**#5 Analysis↔advice boundary: missed for the same reason as advice in #2.** All 22 boundary errors across the three seeds are advice→analysis, with 0 analysis→advice. If I'd drawn the boundary inconsistently, the errors would go both ways. A one-way pile-up means the model can't see what makes a post advice: the truncated opening of an advice post (context, a position, some numbers) looks like analysis. Cause: **a genuinely hard label pair made harder by truncation and too few advice examples**, not inconsistent labelling.
 
 <!-- For each miss: the cause, and how you know. The four common causes are:
      too few examples for a label, a boundary you applied inconsistently, a
