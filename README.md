@@ -262,7 +262,7 @@ None. I labelled all 200 posts myself by hand as I collected them, with no AI pr
 I predict my trained model will beat baseline on news and analysis.
 
 **What the gap actually means:**
-News and Analysis were more accurate with the trained model, but advice came out worse bringing down the overall accuracy to below the baseline. The advice definition or manual labeling were not explicit enough.
+News and Analysis were more accurate with the trained model, but advice came out worse bringing down the overall accuracy to below the baseline. The advice definition or manual labeling were not explicit enough, or sample size was too small.
 
 
 
@@ -286,18 +286,13 @@ News and Analysis were more accurate with the trained model, but advice came out
 <!-- ⚠️ TYPED AS A MARKDOWN TABLE. The notebook prints one ready to paste.
      An image of a matrix earns nothing. -->
 
-| true \ predicted |  |  |  |
-|---|---|---|---|
-| **** |  |  |  |
-| **** |  |  |  |
-| **** |  |  |  |
+| true \ predicted | advice | analysis | news |
+|------------------|--------|----------|------|
+| **advice**       | 0      | 6        |    2 |
+| **analysis**     | 0      | 12       |    0 |
+| **news**         | 0      | 5        |    5 |
 
-**My biggest off-diagonal number, and what it means:**
-<!-- Not "the model made mistakes" — WHICH boundary it didn't learn, and which
-     direction. "7 real analysis posts were called hot_take and only 3 went the
-     other way" is a direction, not just an error rate. -->
-
-
+**My biggest off-diagonal number, and what it means:** 6 advice posts were labeled as analysis while 0 analysis posts were labeled as advice. This lopsided result may be because the posts were truncated due to token limitation and the distinguishing advice portion of the post typically comes at the end. 
 
 ---
 
